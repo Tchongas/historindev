@@ -35,7 +35,6 @@ const Menu: React.FC<MenuProps> = ({
     }
   };
 
-  // Prevent body scroll when menu is open
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = 'hidden';
@@ -45,7 +44,6 @@ const Menu: React.FC<MenuProps> = ({
       document.documentElement.style.overflow = '';
     }
 
-    // Cleanup function to reset overflow when component unmounts
     return () => {
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
@@ -65,8 +63,6 @@ const Menu: React.FC<MenuProps> = ({
 
   return (
     <>
-      {/* Menu Overlay */}
-      {/* Overlay with high z-index */}
       <div
         className={`fixed inset-0 bg-black transition-opacity duration-300 z-[9998] ${
           menuOpen ? 'opacity-40 visible' : 'opacity-0 invisible'
@@ -74,8 +70,6 @@ const Menu: React.FC<MenuProps> = ({
         onClick={() => setMenuOpen(false)}
       />
 
-      {/* Navigation Menu */}
-      {/* Menu with highest z-index */}
       <nav
         className={`fixed top-0 right-0 h-full w-80 bg-[#FEFCF8] shadow-lg z-[9999] transform transition-transform duration-300 ease-in-out flex flex-col border-l border-[#F5F1EB] ${
           menuOpen ? 'translate-x-0' : 'translate-x-full'
@@ -85,15 +79,12 @@ const Menu: React.FC<MenuProps> = ({
         }}
       >
         <div className="flex flex-col h-full overflow-y-auto">
-        {/* Menu Header */}
         <div className="text-center mt-8 px-6 border-b border-[#F5F1EB] pb-4">
           <h2 className="text-3xl font-serif font-bold text-[#4A3F35]">Menu</h2>
           <div className="w-16 h-1 bg-[#8B4513] mx-auto mt-2 rounded-full"></div>
         </div>
 
-        {/* Menu Items */}
         <div className="flex flex-col flex-grow px-6 space-y-2 mt-8">
-          {/* Auth section - only show if auth is enabled */}
           {featureFlags.googleAuth && (
             <>
               {user ? (
@@ -134,7 +125,6 @@ const Menu: React.FC<MenuProps> = ({
                     </div>
                   </button>
                   
-                  {/* Profile Preview - Disabled State */}
                   <Link
                     href="/perfil"
                     className="block px-4 py-3 bg-[#F5F1EB] rounded-md transition-all duration-300 border border-[#A0958A]/20 opacity-60"
@@ -209,7 +199,6 @@ const Menu: React.FC<MenuProps> = ({
             <span className="block text-lg font-semibold text-[#6B5B4F]">HISTÓRIA</span>
           </Link>
 
-          {/* Surprise Me Button (if historias are available) */}
           {historias.length > 0 && (
             <BrownBtn
               onClick={handleSurpriseMe}
@@ -218,7 +207,6 @@ const Menu: React.FC<MenuProps> = ({
             </BrownBtn>
           )}
         </div>
-        {/* Menu Footer */}
         <AdFooter />
         </div>
       </nav>

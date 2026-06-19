@@ -58,13 +58,11 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Protected routes that require authentication
   const protectedRoutes = ['/meus-resultados'];
   const isProtectedRoute = protectedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
 
-  // Redirect to home if trying to access protected route without authentication
   if (isProtectedRoute && !user) {
     const redirectUrl = new URL('/', request.url);
     redirectUrl.searchParams.set('redirect', request.nextUrl.pathname);

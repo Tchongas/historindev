@@ -48,21 +48,15 @@ interface Negocio {
 const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
   const router = useRouter();
   
-  // Use legacy data hook
   const { data } = useLegacyData();
   const { historias, ruas, cidades } = data;
-  
-  // Fetch negocios from Supabase
+
   const [negocios, setNegocios] = useState<Negocio[]>([]);
-  
-  // State for UI components
   const [menuOpen, setMenuOpen] = useState(false);
   const [showMap, setShowMap] = useState(true);
   const [selectedRuaId, setSelectedRuaId] = useState<string | null>(null);
-  const [selectedCityId, setSelectedCityId] = useState<string>('1'); // Default to Gramado
+  const [selectedCityId, setSelectedCityId] = useState<string>('1');
   const [showSteps, setShowSteps] = useState(false);
-  
-  // Popup states
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showDonation, setShowDonation] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -83,7 +77,6 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
     });
   };
 
-  // Helper: slugify tag names for URL
   const slugify = (s: string) =>
     s
       .normalize('NFD')
@@ -92,7 +85,6 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
-  // Fetch negocios from Supabase
   useEffect(() => {
     let isMounted = true;
 
@@ -102,7 +94,7 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
           .from('businesses')
           .select('id, nome, endereco, telefone, categoria, descricao, foto, logo_url, website, instagram, facebook, email')
           .order('nome', { ascending: true })
-          .limit(3); // Only fetch 3 for featured section
+          .limit(3);
 
         if (error) throw error;
 
@@ -121,21 +113,18 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
     };
   }, []);
 
-  // Get featured businesses (first 3)
   const featuredNegocios = useMemo(() => {
     return negocios.slice(0, 3);
   }, [negocios]);
 
   return (
     <div className="min-h-screen bg-[#f4ede0]">
-      {/* Header Component */}
       <Header 
         setMenuOpen={setMenuOpen}
         setShowFeedback={setShowFeedback}
         setShowQuiz={setShowQuiz}
       />
 
-      {/* Menu Component */}
       <Menu 
         menuOpen={menuOpen}
         setMenuOpen={setMenuOpen}
@@ -145,7 +134,6 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
 
       {/* Main Content */}
       <div className="relative">
-        {/* Interactive Map Section - Collapsible on mobile */}
         {showMap && (
           <div className="bg-[#FEFCF8] shadow-sm border-b border-[#E6D3B4]">
             <div className="max-w-6xl mx-auto">
@@ -161,15 +149,12 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
           </div>
         )}
 
-        {/* Welcome Section */}
         <div className="max-w-4xl mx-auto px-4 py-4 sm:py-6 mt-2 md:mt-0">
           <WelcomeCard />
         </div>
 
-        {/* Main Content Container */}
         <div className="max-w-4xl mx-auto px-4 pb-8">
           
-          {/* Categories Section */}
           <section className="mb-10">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl sm:text-2xl font-bold text-[#4A3F35] flex items-center gap-2">
@@ -195,7 +180,6 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
             </div>
           </section>
 
-          {/* Recommended Streets */}
           <section className="mb-10">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl sm:text-2xl font-bold text-[#4A3F35] flex items-center gap-2">
@@ -212,7 +196,6 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
             <RecomendedStreets ruas={ruas} historias={historias} handleRuaClick={handleRuaClick} />
           </section>
 
-          {/* Recommended Historias */}
           <section className="mb-10">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl sm:text-2xl font-bold text-[#4A3F35] flex items-center gap-2">
@@ -229,7 +212,6 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
             <RecomendedHistorias historias={historias} />
           </section>
 
-          {/* Businesses Section */}
           {featuredNegocios.length > 0 && (
             <section className="mb-10">
               <div className="flex items-center justify-between mb-4">
@@ -248,7 +230,6 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
             </section>
           )}
 
-          {/* Quiz CTA Banner - Moved below main content */}
           <section className="mb-10">
             <button
               onClick={() => setShowQuiz(true)}
@@ -268,26 +249,22 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
             </button>
           </section>
 
-          {/* African Legacy Card */}
           <section className="mb-10">
             <LegadoAfricanoCard />
           </section>
 
-          {/* Platform Information */}
           <section className="mb-10">
             <div className="bg-white p-6 rounded-lg shadow-md border-2 border-[#F5F1EB]">
               <SiteInfo />
             </div>
           </section>
 
-          {/* Donation Card */}
           <section className="mb-10">
             <DonationCard />
           </section>
         </div>
       </div>
 
-      {/* Popup Components - Conditional Rendering */}
       {showOnboarding && (
         <OnboardingPopup
           onClose={() => setShowOnboarding(false)}
@@ -320,7 +297,6 @@ const Home: React.FC<HomeProps> = ({ onPreviewOpen }) => {
         />
       )}
 
-      {/* Fixed footer for desktop */}
       <Footer />
     </div>
     

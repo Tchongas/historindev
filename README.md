@@ -1,111 +1,155 @@
-# Historin Dev
+# Historin
 
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 18+ 
-- npm or pnpm
-- Supabase account (for database features)
-
-### Setup
-
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd historindev
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure environment variables**
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit `.env` and add your Supabase credentials:
-   - Get them from: https://app.supabase.com/project/_/settings/api
-   - `NEXT_PUBLIC_SUPABASE_URL` - Your project URL
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your anon/public key
-
-4. **Run development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open** http://localhost:3000
-
-### Deployment (Vercel)
-
-**Important:** When deploying a fork, you must configure environment variables in Vercel:
-
-1. Go to your Vercel project → Settings → Environment Variables
-2. Add the same variables from `.env.example`
-3. Redeploy
-
-Without these variables, the build will succeed but database features won't work.
-
-### Troubleshooting
-
-If deployment fails, see **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** for:
-- Common build errors & solutions
-- Step-by-step debugging guide
-- Environment variable setup
-- What to check when builds fail
+Plataforma para explorar as histórias das ruas de **Gramado** e **Canela**. Os usuários navegam pelas ruas, leem histórias no formato estilo Instagram, e respondem a quizzes sobre a história local.
 
 ---
 
-## 📋 Development Checklist
+## Acesso Rápido
 
-- [x] Migrar Pagina de ruas e historias
-- [x] Migrar Pagina Referencias
-- [x] Migrar Pagina Adicionar Historia
-- [x] Migrar Pagina Sobre
-- [x] Migrar Pagina Legado Africano
-- [x] Atualizar paginas para terem o mesmo conteudo que o site atual
-- [x] Migrar CSS para ter paridade com o site atual
-- [x] Serch bar funcional
-- [x] popup de feedback
-- [x] Adcionar Design de "scroll" para ver historias
-- [x] Adcionar Pagina do Quiz
-- [x] Adcionar pins no mapa
-- [x] Migrar funcionalidade completa do mapa
-- [x] Adcionar selecionar ruas
-- [x] Adcionar selecionar cidades
-- [x] Adicionar Botao de Centralizar Mapa
-- [x] Adicionar formulario de feedback
-- [x] Adicionar funcionalidade de busca
-- [x] Adicionar funcionalidade de feedback
-- [x] Adicionar funcionalidade de add story
+| O que | Link |
+|-------|------|
+| Site em produção | https://historin.com |
+| Painel admin | https://historin.com/admin |
+| Supabase (banco) | https://supabase.com/dashboard/project/cwkvwekczzcagdrwujah |
 
-- [ ] Adcionar sistema de tags
-- [ ] Migrar Banco de dados para um tradicional
-- [ ] Criar Sistema de atualizacao de banco de dados
-- [ ] Simplificacao e organizacao de componentes
+---
 
+## Painel Administrativo (`/admin`)
 
-- [x] Home Page
+O painel fica em `/admin` e usa **senha simples** (sem login de conta). A sessão expira após 10 minutos de inatividade.
 
-    - [x] Make the map take the full width
-    - [x] Remove stories from the map, keep only street icons
-    - [x] On map click, show a photo preview of the location instead of opening Maps
+A senha fica na variável de ambiente `ADMIN_TOKEN` (ver seção de variáveis abaixo).
 
-- [ ] Street / Story Page
+### O que dá pra gerenciar
 
-    - [ ] Show recommended places below the street (only from the selected city)
-    - [X] Copy Instagram-style story display:
-        - [x] Show the story image above the title, taking full screen width
-        - [x] If multiple images exist, allow swiping like a carousel
-        - [x] Show only the beginning of the story text with a "more" link to expand the full text (like Instagram)
+**Conteúdo principal**
+- **Histórias** — Adicionar, editar e remover histórias. Cada história tem título, texto, imagens, autores, tags e está vinculada a uma rua.
+- **Ruas** — As ruas de Gramado e Canela. Cada rua tem nome, descrição, coordenadas (para o mapa) e cidade.
+- **Cidades** — Gramado e Canela. Raramente precisam ser editadas.
+- **Negócios** — Estabelecimentos locais mostrados na home.
 
-- [x] Timeline view:
+**Quiz & Engajamento**
+- **Perguntas** — Perguntas do quiz, separadas por cidade (`gramado`, `canela`, `geral`).
+- **Resultados** — Visualizar os resultados do quiz enviados pelos usuários.
+- **QR Codes** — Gerenciar os QR codes da caça ao tesouro (`/caca-qr`).
+- **Popup Ads** — Popups que aparecem na home após alguns segundos.
 
-    - [x] Default to the Instagram-like timeline
-    - [x] Add side year timeline view
+**Referências** (visíveis na página `/referencias`)
+- **Organizações**, **Autores**, **Obras**, **Sites** — créditos e fontes bibliográficas.
 
-- [X] Quiz
+---
 
-    - [X] Add name and city fields to the form
-    - [X] Separate questions by city or "general"
+## Variáveis de Ambiente
+
+O arquivo `.env` fica na raiz do projeto (`historindev/.env`) e **não é commitado** no Git.
+
+Para colocar o projeto em outro servidor, crie um `.env` com:
+
+```env
+# Supabase — banco de dados e autenticação
+NEXT_PUBLIC_SUPABASE_URL=https://cwkvwekczzcagdrwujah.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<chave anon pública>
+SUPABASE_SERVICE_ROLE_KEY=<chave service role — nunca expor publicamente>
+
+# Senha do painel admin em /admin
+ADMIN_TOKEN=<senha escolhida>
+
+# Google Analytics (opcional)
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+```
+
+**Onde pegar as chaves Supabase:**
+Supabase Dashboard → seu projeto → Settings → API
+
+**Onde configurar no Vercel:**
+Vercel → seu projeto → Settings → Environment Variables
+
+---
+
+## Autenticação de Usuários (Google)
+
+Os usuários podem fazer login com Google para salvar seus resultados do quiz. Isso é gerenciado pelo **Supabase Auth**.
+
+Para ativar/desativar o login com Google (e outras features), edite `src/config/featureFlags.ts`:
+
+```ts
+const FEATURES_ENABLED = true; // mude para false para desativar tudo
+```
+
+Para configurar o Google OAuth do zero:
+1. Criar projeto no [Google Cloud Console](https://console.cloud.google.com) e ativar a API OAuth.
+2. Adicionar `https://cwkvwekczzcagdrwujah.supabase.co/auth/v1/callback` como URI de redirecionamento.
+3. Supabase Dashboard → Authentication → Providers → Google → colar Client ID e Secret.
+
+A única rota protegida por autenticação é `/perfil` (histórico de quiz do usuário).
+
+---
+
+## Estrutura do Projeto
+
+```
+historindev/
+├── src/
+│   ├── app/                  # Páginas (roteamento Next.js)
+│   │   ├── admin/            # Painel administrativo
+│   │   ├── api/admin/        # APIs REST usadas pelo painel
+│   │   ├── rua/[ruaId]/      # Página de rua e histórias
+│   │   ├── quiz/             # Página do quiz
+│   │   ├── referencias/      # Créditos e fontes
+│   │   ├── sobre/            # Sobre o projeto
+│   │   ├── legado-africano/  # Artigo do legado africano
+│   │   ├── ruasehistorias/   # Listagem geral de ruas e histórias
+│   │   └── adicionar-historia/ # Formulário de contribuição
+│   ├── components/           # Componentes React reutilizáveis
+│   ├── config/
+│   │   └── featureFlags.ts   # Liga/desliga features (auth, quiz, etc.)
+│   ├── contexts/
+│   │   └── AuthContext.tsx   # Estado global de autenticação
+│   ├── lib/supabase/         # Clientes Supabase (browser e server)
+│   └── utils/
+│       └── adminApi.ts       # Sessão do admin (localStorage, 10min)
+├── supabase/migrations/      # Migrações do banco de dados
+├── public/                   # Imagens e assets estáticos
+├── .env                      # Variáveis de ambiente (não commitado)
+└── DESIGN_SYSTEM.md          # Guia de cores, tipografia e componentes
+```
+
+### Como a autenticação do admin funciona
+
+O painel admin **não usa Supabase Auth**. Funciona assim:
+1. O admin digita a senha em `/admin`.
+2. A senha é comparada com `ADMIN_TOKEN` (variável de ambiente) via header `x-admin-token`.
+3. A sessão fica salva no `localStorage` do browser e expira em 10 minutos.
+4. Todas as rotas `/api/admin/*` verificam o token a cada requisição.
+
+---
+
+## Deploy (Vercel)
+
+O projeto está configurado para deploy automático no Vercel.
+
+1. Conectar o repositório ao Vercel.
+2. Configurar as variáveis de ambiente (ver seção acima).
+3. O Vercel faz build e deploy automaticamente a cada push no branch principal.
+
+Para rodar localmente:
+
+```bash
+npm install
+# Criar o .env com as variáveis acima
+npm run dev
+# Abrir http://localhost:3000
+```
+
+---
+
+## Design System
+
+O arquivo `DESIGN_SYSTEM.md` documenta as cores, tipografia, espaçamentos e padrões de componentes usados em todo o projeto. Consulte antes de criar novos componentes ou páginas.
+
+Cores principais:
+- **Fundo header:** `#E6D3B4`
+- **Fundo geral:** `#F4EDE0`
+- **Marrom primário:** `#8B4513`
+- **Texto principal:** `#4A3F35`
+- **Texto secundário:** `#6B5B4F` / `#A0958A`

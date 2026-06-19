@@ -21,23 +21,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // If auth is disabled, skip initialization
     if (!featureFlags.googleAuth) {
       setLoading(false);
       return;
     }
 
-    // Get initial session
     supabaseBrowser.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     }).catch(() => {
-      // Auth not configured, fail silently
       setLoading(false);
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabaseBrowser.auth.onAuthStateChange((_event, session) => {
@@ -50,7 +46,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
-    // If auth is disabled, show message and return
     if (!featureFlags.googleAuth) {
       console.log('Google Auth is currently disabled');
       alert('Login com Google estará disponível em breve!');

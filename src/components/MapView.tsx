@@ -35,16 +35,13 @@ const MapView: React.FC<MapViewProps> = ({
   
   const { getByRuaId: getHistoriasByRuaId } = useHistorias();
 
-  // Ensure we're on the client side and load Leaflet
   useEffect(() => {
     setIsClient(true);
     
-    // Dynamically import Leaflet only on client side
     const loadLeaflet = async () => {
       if (typeof window !== 'undefined') {
         const leaflet = await import('leaflet');
         
-        // Fix for default markers in Next.js
         delete (leaflet.Icon.Default.prototype as any)._getIconUrl;
         leaflet.Icon.Default.mergeOptions({
           iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/images/marker-icon-2x.png',
@@ -62,25 +59,20 @@ const MapView: React.FC<MapViewProps> = ({
   useEffect(() => {
     if (!isClient || !L) return;
 
-    // Initialize the map only once, centered on Gramado coordinates
     mapRef.current = L.map('map', { zoomControl: false }).setView([-29.368110031921475, -50.83614840951764], 12);
     
-    // Add OpenStreetMap tiles with proper attribution
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(mapRef.current);
 
-    // Add initial markers
     addMarkers();
 
-    // Fix for map rendering issues - invalidate size after a short delay
     setTimeout(() => {
       if (mapRef.current) {
         mapRef.current.invalidateSize();
       }
     }, 100);
 
-    // Add resize observer to handle dynamic container size changes
     let resizeObserver: ResizeObserver | null = null;
     if (mapContainerRef.current) {
       resizeObserver = new ResizeObserver(() => {
@@ -92,11 +84,9 @@ const MapView: React.FC<MapViewProps> = ({
     }
 
     return () => {
-      // Cleanup resize observer
       if (resizeObserver) {
         resizeObserver.disconnect();
       }
-      // Remove the map when component is unmounted
       if (mapRef.current) {
         mapRef.current.remove();
       }
@@ -104,7 +94,6 @@ const MapView: React.FC<MapViewProps> = ({
   }, [isClient, L]);
 
   useEffect(() => {
-    // Update markers when component loads
     if (isClient && L && mapRef.current) {
       addMarkers();
     }
@@ -119,13 +108,11 @@ const MapView: React.FC<MapViewProps> = ({
   const addMarkers = () => {
     if (!L || !mapRef.current) return;
 
-    // Remove all existing markers from the map before adding new ones
     markersRef.current.forEach(marker => {
       mapRef.current.removeLayer(marker);
     });
     markersRef.current = [];
 
-    // Icon for streets
     const ruaIcon = L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
       iconSize: [25, 41],
@@ -136,7 +123,6 @@ const MapView: React.FC<MapViewProps> = ({
     });
 
     ruas.forEach(rua => {
-      // Validate coordinates
       if (
         rua.coordenadas &&
         Array.isArray(rua.coordenadas) &&
@@ -146,7 +132,6 @@ const MapView: React.FC<MapViewProps> = ({
       ) {
         const marker = L.marker(rua.coordenadas, { icon: ruaIcon }).addTo(mapRef.current);
         
-        // Add click event to trigger external popup
         marker.on('click', () => {
           const historias = getHistoriasByRuaId(rua.id);
           const firstHistoria = historias.length > 0 ? historias[0] : undefined;
@@ -163,7 +148,6 @@ const MapView: React.FC<MapViewProps> = ({
     });
   };
 
-  // Don't render the map on server side
   if (!isClient) {
     return (
       <div className="map-container relative h-full min-h-[16rem] md:min-h-[24rem] bg-[#F5F1EB] flex items-center justify-center rounded-lg">
@@ -177,7 +161,6 @@ const MapView: React.FC<MapViewProps> = ({
 
   return (
     <div ref={mapContainerRef} className="map-container relative h-full min-h-[16rem] md:min-h-[24rem] w-full z-0">
-      {/* Recenter button in the top right corner */}
       <div className="absolute top-2 right-2 z-[1000]">
         <button
           onClick={recenterMap}
@@ -209,7 +192,6 @@ const MapView: React.FC<MapViewProps> = ({
         </button>
       </div>
       
-      {/* Map div where the map will be rendered */}
       <div id="map" className="h-full w-full rounded-lg"></div>
     </div>
   );

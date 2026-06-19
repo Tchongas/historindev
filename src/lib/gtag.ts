@@ -1,7 +1,5 @@
-// Google Analytics configuration and utilities
 export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID || '';
 
-// https://developers.google.com/analytics/devguides/collection/gtagjs/pages
 export const pageview = (url: string) => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('config', GA_TRACKING_ID, {
@@ -10,7 +8,6 @@ export const pageview = (url: string) => {
   }
 };
 
-// https://developers.google.com/analytics/devguides/collection/gtagjs/events
 export const event = ({ action, category, label, value }: {
   action: string;
   category: string;
@@ -26,7 +23,6 @@ export const event = ({ action, category, label, value }: {
   }
 };
 
-// Track UTM parameters
 export const trackUTMParameters = () => {
   if (typeof window === 'undefined') return;
 
@@ -44,22 +40,19 @@ export const trackUTMParameters = () => {
   }
 };
 
-// Track hash route changes
 export const trackHashRoute = (hashRoute: string) => {
   if (typeof window === 'undefined') return;
   
   const fullPath = `${window.location.pathname}${window.location.search}#${hashRoute}`;
   pageview(fullPath);
   
-  // Also track as a custom event
-  event({
+    event({
     action: 'hash_route_change',
     category: 'navigation',
     label: hashRoute,
   });
 };
 
-// Global gtag function declaration
 declare global {
   interface Window {
     gtag: (...args: any[]) => void;

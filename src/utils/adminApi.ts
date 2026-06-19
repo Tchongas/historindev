@@ -57,7 +57,6 @@ export async function adminFetch<T = any>(path: string, init?: RequestInit): Pro
     const text = await res.text().catch(() => '');
     throw new Error(`Admin API error ${res.status}: ${text}`);
   }
-  // Successful request extends the session
   refreshAdminSession();
   return res.json();
 }

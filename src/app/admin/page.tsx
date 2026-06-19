@@ -36,9 +36,7 @@ export default function AdminHome() {
     const id = setInterval(() => {
       const s = getAdminSession();
       setRemainingMs(s?.remainingMs ?? 0);
-      if (!s) {
-        // auto-logout UI state when expired
-      }
+      if (!s) {}
     }, 1000);
     return () => clearInterval(id);
   }, []);
@@ -49,7 +47,6 @@ export default function AdminHome() {
     e.preventDefault();
     if (!password.trim()) return;
     setAdminSession(password.trim());
-    // do not auto-navigate; allow admin to choose destination
   }
 
   function handleLogout() {
@@ -89,7 +86,6 @@ export default function AdminHome() {
         </div>
       )}
 
-      {/* Content Management */}
       <div className="p-6 bg-[#FEFCF8] border border-[#F5F1EB] rounded-lg shadow-sm space-y-4">
         <h2 className="font-semibold text-[#4A3F35] flex items-center gap-2">
           <i className="fas fa-database text-[#8B4513]"></i>
@@ -115,7 +111,6 @@ export default function AdminHome() {
         </div>
       </div>
 
-      {/* Quiz & Engagement */}
       <div className="p-6 bg-[#FEFCF8] border border-[#F5F1EB] rounded-lg shadow-sm space-y-4">
         <h2 className="font-semibold text-[#4A3F35] flex items-center gap-2">
           <i className="fas fa-gamepad text-[#8B4513]"></i>
@@ -141,7 +136,6 @@ export default function AdminHome() {
         </div>
       </div>
 
-      {/* References */}
       <div className="p-6 bg-[#FEFCF8] border border-[#F5F1EB] rounded-lg shadow-sm space-y-4">
         <h2 className="font-semibold text-[#4A3F35] flex items-center gap-2">
           <i className="fas fa-bookmark text-[#8B4513]"></i>

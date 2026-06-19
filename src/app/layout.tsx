@@ -4,17 +4,6 @@ import HashRouter from "../components/HashRouter";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ToastProvider } from "@/components/ui";
 
-// Temporarily disabled to fix build issues
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
-
 export const metadata: Metadata = {
   metadataBase: new URL("https://historin.com"),
   title: {

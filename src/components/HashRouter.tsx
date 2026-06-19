@@ -15,36 +15,29 @@ const HashRouter = () => {
       if (hash) {
         setIsProcessingHash(true);
         
-        // Remove the # from the beginning
         const route = hash.substring(1);
-        
-        // Preserve existing URL search parameters (UTM, etc.)
         const searchParams = window.location.search;
         
-        // Check if it matches our rua/historia pattern
         const ruaHistoriaMatch = route.match(/^\/rua\/(\d+)\/historia\/(\d+)$/);
         
         if (ruaHistoriaMatch) {
           const [, ruaId, historiaId] = ruaHistoriaMatch;
           const nextjsRoute = `/rua/${ruaId}/historia/${historiaId}${searchParams}`;
           
-          // Replace the current URL with the Next.js route
           router.replace(nextjsRoute);
           return;
         }
         
-        // Check if it matches simple rua pattern
         const ruaMatch = route.match(/^\/rua\/(\d+)$/);
         
         if (ruaMatch) {
           const [, ruaId] = ruaMatch;
-          const nextjsRoute = `/rua/${ruaId}/historia/1${searchParams}`; // Default to first historia
+          const nextjsRoute = `/rua/${ruaId}/historia/1${searchParams}`;
           
           router.replace(nextjsRoute);
           return;
         }
         
-        // If no pattern matches, redirect to home
         if (route !== '/') {
           router.replace(`/${searchParams}`);
         }
@@ -53,13 +46,11 @@ const HashRouter = () => {
       }
     };
 
-    // Check for hash on initial load
     const initialHash = window.location.hash;
     if (initialHash && pathname === '/') {
       handleHashRoute();
     }
 
-    // Listen for hash changes
     window.addEventListener('hashchange', handleHashRoute);
 
     return () => {
@@ -67,7 +58,6 @@ const HashRouter = () => {
     };
   }, [router, pathname]);
 
-  // Show loading overlay if we're processing a hash route and on home page
   if (isProcessingHash && pathname === '/') {
     return (
       <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
