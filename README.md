@@ -10,8 +10,6 @@ Plataforma para explorar as histórias das ruas de **Gramado** e **Canela**. Os 
 |-------|------|
 | Site em produção | https://historin.com |
 | Painel admin | https://historin.com/admin |
-| Supabase (banco) | https://supabase.com/dashboard/project/cwkvwekczzcagdrwujah |
-
 ---
 
 ## Painel Administrativo (`/admin`)
@@ -47,7 +45,7 @@ Para colocar o projeto em outro servidor, crie um `.env` com:
 
 ```env
 # Supabase — banco de dados e autenticação
-NEXT_PUBLIC_SUPABASE_URL=https://cwkvwekczzcagdrwujah.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<chave anon pública>
 SUPABASE_SERVICE_ROLE_KEY=<chave service role — nunca expor publicamente>
 
@@ -78,7 +76,7 @@ const FEATURES_ENABLED = true; // mude para false para desativar tudo
 
 Para configurar o Google OAuth do zero:
 1. Criar projeto no [Google Cloud Console](https://console.cloud.google.com) e ativar a API OAuth.
-2. Adicionar `https://cwkvwekczzcagdrwujah.supabase.co/auth/v1/callback` como URI de redirecionamento.
+2. Adicionar callback do supabase como URI de redirecionamento.
 3. Supabase Dashboard → Authentication → Providers → Google → colar Client ID e Secret.
 
 A única rota protegida por autenticação é `/perfil` (histórico de quiz do usuário).
